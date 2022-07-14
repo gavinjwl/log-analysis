@@ -83,6 +83,7 @@
 ```sql
 CREATE SCHEMA IF NOT EXISTS network_log;
 
+-- fortigate
 CREATE TABLE IF NOT EXISTS network_log.fortigate (
     date_time_raw VARCHAR,
     device_name VARCHAR,
@@ -100,6 +101,7 @@ SORTKEY AUTO
 ENCODE AUTO
 ;
 
+-- paloalto
 CREATE TABLE IF NOT EXISTS network_log.paloalto (
     future_use_1 VARCHAR,
     receive_time VARCHAR,
@@ -182,16 +184,13 @@ SORTKEY AUTO
 ENCODE AUTO
 ;
 
-CREATE TABLE IF NOT EXISTS network_log.cisco_ise (
-    host_time VARCHAR,
-    server_host VARCHAR,
-    logging_cat VARCHAR,
-    msg_id VARCHAR,
-    total_seg VARCHAR,
-    seg_num VARCHAR,
-    date_time VARCHAR,
-    msg_txt VARCHAR,
-    map_message SUPER
+-- event_monitor
+CREATE TABLE IF NOT EXISTS network_log.event_monitor (
+    event_time TIMESTAMPTZ,
+    principal VARCHAR,
+    statement_name VARCHAR,
+    statement_id VARCHAR,
+    state VARCHAR
 )
 DISTSTYLE AUTO
 SORTKEY AUTO
@@ -206,11 +205,44 @@ ENCODE AUTO
 建立 Redshift Users 並給予權限
 
 ```sql
-CREATE USER "IAMR:<role-name-from-cfn-output>" PASSWORD DISABLE;
-GRANT ALL ON SCHEMA network_log TO "IAMR:<role-name-from-cfn-output>";
-GRANT ALL ON TABLE network_log.fortigate TO "IAMR:<role-name-from-cfn-output>";
+-- Grant Fortigate
+CREATE USER "<role-name-from-cfn-output>" PASSWORD DISABLE;
+GRANT ALL ON SCHEMA network_log TO "<role-name-from-cfn-output>";
+GRANT ALL ON TABLE network_log.fortigate TO "<role-name-from-cfn-output>";
 
-CREATE USER 'IAMR:<role-name-from-cfn-output>' PASSWORD DISABLE;
-GRANT ALL ON SCHEMA network_log TO "IAMR:<role-name-from-cfn-output>";
-GRANT ALL ON TABLE network_log.paloalto TO "IAMR:<role-name-from-cfn-output>";
+-- Grant Paloalto
+CREATE USER '<role-name-from-cfn-output>' PASSWORD DISABLE;
+GRANT ALL ON SCHEMA network_log TO "<role-name-from-cfn-output>";
+GRANT ALL ON TABLE network_log.paloalto TO "<role-name-from-cfn-output>";
+
+-- Grant Traffic
+CREATE USER '<role-name-from-cfn-output>' PASSWORD DISABLE;
+GRANT ALL ON SCHEMA network_log TO "<role-name-from-cfn-output>";
+GRANT ALL ON TABLE network_log.traffic TO "<role-name-from-cfn-output>";
+
+-- Grant Monitor
+CREATE USER '<role-name-from-cfn-output>' PASSWORD DISABLE;
+GRANT ALL ON SCHEMA network_log TO "<role-name-from-cfn-output>";
+GRANT ALL ON TABLE network_log.event_monitor TO "<role-name-from-cfn-output>";
 ```
+
+## Troubleshooting
+
+- Lambda worker 成功執行但是 Redshift 無反應
+
+    1. 檢查 STL_ERROR
+
+        ```sql
+        SELECT userid, process, pid, context, errcode, error, recordtime
+        FROM STL_ERROR
+        ORDER BY recordtime DESC
+        ;
+        ```
+
+    1. 測試 Redshift User 權限
+
+        ```sql
+        SET SESSION AUTHORIZATION '';
+        -- Do something
+        SET SESSION AUTHORIZATION default;
+        ```
