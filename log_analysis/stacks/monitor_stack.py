@@ -30,9 +30,9 @@ class MonitorStack(Stack):
 
         function = aws_lambda.Function(
             self, id='function',
-            code=aws_lambda.Code.from_asset(lambda_code_path),
-            handler='lambda_function.lambda_handler',
-            runtime=aws_lambda.Runtime.PYTHON_3_8,
+            code=aws_lambda.EcrImageCode.from_asset_image(lambda_code_path),
+            handler=aws_lambda.Handler.FROM_IMAGE,
+            runtime=aws_lambda.Runtime.FROM_IMAGE,
             memory_size=128,
             timeout=Duration.seconds(30),
             dead_letter_queue_enabled=True,
@@ -52,6 +52,7 @@ class MonitorStack(Stack):
                     effect=aws_iam.Effect.ALLOW,
                     actions=[
                         'redshift-data:*',
+                        'redshift:DescribeClusters', # For JDBC/ODBC with IAM auth
                     ],
                     resources=['*'],
                 ),
