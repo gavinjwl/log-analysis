@@ -98,24 +98,43 @@ def transform(input_name) -> str:
         ('rcvdbyte', r'\s?rcvd=(\S+)\s?'),
     ]
 
+    def _processing(input_line):
+        '''
+        TODO handle no any match
+        '''
+        json_data = dict()
+
+        date_match = re.search(date_pattern, input_line)
+        time_match = re.search(time_pattern, input_line)
+        if date_match and time_match:
+            (_date) = date_match.group(1)
+            (_time) = time_match.group(1)
+            json_data['date_time_raw'] = f'{_date} {_time}'
+
+        for (key, pattern) in patterns:
+            match = re.search(pattern, input_line)
+            if match:
+                value = match.group(1)
+                json_data[key] = value.strip('"')
+        return json.dumps(json_data)
+        
+
     with open(input_path, 'r') as input, gzip.open(output_path, 'w') as output:
-        for input_line in input:
-            json_data = dict()
-
-            date_match = re.search(date_pattern, input_line)
-            time_match = re.search(time_pattern, input_line)
-            if date_match and time_match:
-                (_date) = date_match.group(1)
-                (_time) = time_match.group(1)
-                json_data['date_time_raw'] = f'{_date} {_time}'
-
-            for (key, pattern) in patterns:
-                match = re.search(pattern, input_line)
-                if match:
-                    value = match.group(1)
-                    json_data[key] = value.strip('"')
-            output_line = json.dumps(json_data)
-            output.write(f'{output_line}\n'.encode('utf-8'))
+        input_line = next(input, None)
+        if input_line:
+            input_line = input_line.strip()
+            if len(input_line) > 0:
+                output_line = _processing(input_line)
+                output.write(f'{output_line}'.encode('utf-8'))
+            input_line = next(input, None)
+            while input_line:
+                input_line = input_line.strip()
+                if len(input_line) > 0:
+                    output_line = _processing(input_line)
+                    output.write(f'\n{output_line}'.encode('utf-8'))
+                input_line = next(input, None)
+        else:
+            pass
 
     return output_name
 
