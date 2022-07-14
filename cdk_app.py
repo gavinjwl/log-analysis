@@ -12,7 +12,6 @@ fortigate_dir = os.path.join(
 )
 FortigateOdsStack = OdsStack(app, 'FortigateOdsStack', 'fortigate', fortigate_dir)
 
-
 paloalto_dir = os.path.join(
     os.path.dirname(os.path.realpath(__file__)),
     'log_analysis', 'paloalto_lambda',
