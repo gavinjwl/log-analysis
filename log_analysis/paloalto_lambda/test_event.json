@@ -1,0 +1,20 @@
+{
+    "Records": [
+        {
+            "messageId": "0e709c76-cf4a-4fa5-953d-dff3dcf6f7b4",
+            "receiptHandle": "",
+            "body": "{\"Records\":[{\"eventVersion\":\"2.1\",\"eventSource\":\"aws:s3\",\"awsRegion\":\"ap-northeast-1\",\"eventTime\":\"2022-07-13T06:59:26.392Z\",\"eventName\":\"ObjectCreated:Put\",\"userIdentity\":{\"principalId\":\"AWS:AIDAVFS7MDIFLS7RL3CFM\"},\"requestParameters\":{\"sourceIPAddress\":\"<ip>\"},\"responseElements\":{\"x-amz-request-id\":\"YX26XX1RVQTRGJMA\",\"x-amz-id-2\":\"5q/EHcOP22/bsigpgUAsEhu2Gb3Ii8E5thlxJknL7QgGxu66VnNhU8oE5XY8Jg6lyCYEO6VErUjH9AZsZSaMZ+tWU5xbPDd4pcvOXwtCqWg=\"},\"s3\":{\"s3SchemaVersion\":\"1.0\",\"configurationId\":\"MWY0ZjU4NmEtYzFjYi00MzI3LWE3OGQtMmJjMmZlNjc2OGE1\",\"bucket\":{\"name\":\"paloaltoodsstack-bucket43879c71-1t1ye8vzp1xkr\",\"ownerIdentity\":{\"principalId\":\"A5NO8ZYI27BKY\"},\"arn\":\"arn:aws:s3:::paloaltoodsstack-bucket43879c71-1t1ye8vzp1xkr\"},\"object\":{\"key\":\"raw/Paloalto_sample.txt\",\"size\":80356,\"eTag\":\"a650f46b9f5d61f9b3ef70b7f65be7a0\",\"sequencer\":\"0062CE6D4DDEDBC66A\"}}}]}",
+            "attributes": {
+                "ApproximateReceiveCount": "2",
+                "SentTimestamp": "1657695567606",
+                "SenderId": "",
+                "ApproximateFirstReceiveTimestamp": "1657695567610"
+            },
+            "messageAttributes": {},
+            "md5OfBody": "be139a0ed7b031307dfc241e5bea25a9",
+            "eventSource": "aws:sqs",
+            "eventSourceARN": "arn:aws:sqs:ap-northeast-1:<account-id>:<queue-name>",
+            "awsRegion": "ap-northeast-1"
+        }
+    ]
+}

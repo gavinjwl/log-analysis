@@ -1,0 +1,52 @@
+{
+    "Records": [
+        {
+            "messageId": "0e709c76-cf4a-4fa5-953d-dff3dcf6f7b4",
+            "receiptHandle": "",
+            "body": "{\"Records\":[{\"eventVersion\":\"2.1\",\"eventSource\":\"aws:s3\",\"awsRegion\":\"ap-northeast-1\",\"eventTime\":\"2022-07-13T06:59:26.392Z\",\"eventName\":\"ObjectCreated:Put\",\"userIdentity\":{\"principalId\":\"AWS:AIDAVFS7MDIFLS7RL3CFM\"},\"requestParameters\":{\"sourceIPAddress\":\"<ip>\"},\"responseElements\":{\"x-amz-request-id\":\"YX26XX1RVQTRGJMA\",\"x-amz-id-2\":\"5q/EHcOP22/bsigpgUAsEhu2Gb3Ii8E5thlxJknL7QgGxu66VnNhU8oE5XY8Jg6lyCYEO6VErUjH9AZsZSaMZ+tWU5xbPDd4pcvOXwtCqWg=\"},\"s3\":{\"s3SchemaVersion\":\"1.0\",\"configurationId\":\"MWY0ZjU4NmEtYzFjYi00MzI3LWE3OGQtMmJjMmZlNjc2OGE1\",\"bucket\":{\"name\":\"fortigateodsstack-bucket43879c71-1c56jgrp7loty\",\"ownerIdentity\":{\"principalId\":\"A5NO8ZYI27BKY\"},\"arn\":\"arn:aws:s3:::fortigateodsstack-bucket43879c71-1c56jgrp7loty\"},\"object\":{\"key\":\"raw/Fortigate_sample_dq.txt\",\"size\":80356,\"eTag\":\"a650f46b9f5d61f9b3ef70b7f65be7a0\",\"sequencer\":\"0062CE6D4DDEDBC66A\"}}}]}",
+            "attributes": {
+                "ApproximateReceiveCount": "2",
+                "SentTimestamp": "1657695567606",
+                "SenderId": "",
+                "ApproximateFirstReceiveTimestamp": "1657695567610"
+            },
+            "messageAttributes": {},
+            "md5OfBody": "be139a0ed7b031307dfc241e5bea25a9",
+            "eventSource": "aws:sqs",
+            "eventSourceARN": "arn:aws:sqs:ap-northeast-1:<account-id>:<queue-name>",
+            "awsRegion": "ap-northeast-1"
+        },
+        {
+            "messageId": "9d1f1c62-77dd-4846-a2c0-cff27f1a1131",
+            "receiptHandle": "",
+            "body": "{\"Records\":[{\"eventVersion\":\"2.1\",\"eventSource\":\"aws:s3\",\"awsRegion\":\"ap-northeast-1\",\"eventTime\":\"2022-07-13T06:59:33.908Z\",\"eventName\":\"ObjectCreated:Put\",\"userIdentity\":{\"principalId\":\"AWS:AIDAVFS7MDIFLS7RL3CFM\"},\"requestParameters\":{\"sourceIPAddress\":\"<ip>\"},\"responseElements\":{\"x-amz-request-id\":\"6N1ZY59SQVX5DPN2\",\"x-amz-id-2\":\"nqVXWi9dfXk02c9MRWjikubup+QlR2T3wvtuSHH94pcwYCPmDyKGjFFMiaFggaXVIkcMhexBFRs3khnnFDMm3tl3vBTjZKwa\"},\"s3\":{\"s3SchemaVersion\":\"1.0\",\"configurationId\":\"MWY0ZjU4NmEtYzFjYi00MzI3LWE3OGQtMmJjMmZlNjc2OGE1\",\"bucket\":{\"name\":\"fortigateodsstack-bucket43879c71-1c56jgrp7loty\",\"ownerIdentity\":{\"principalId\":\"A5NO8ZYI27BKY\"},\"arn\":\"arn:aws:s3:::fortigateodsstack-bucket43879c71-1c56jgrp7loty\"},\"object\":{\"key\":\"raw/Fortigate_sample_ndq.txt\",\"size\":55420,\"eTag\":\"1d23b65f04b945261dac970d4eca797d\",\"sequencer\":\"0062CE6D559ADFF31F\"}}}]}",
+            "attributes": {
+                "ApproximateReceiveCount": "2",
+                "SentTimestamp": "1657695574893",
+                "SenderId": "",
+                "ApproximateFirstReceiveTimestamp": "1657695574960"
+            },
+            "messageAttributes": {},
+            "md5OfBody": "078e8fd79d696bc7f0d0c60becd8c2eb",
+            "eventSource": "aws:sqs",
+            "eventSourceARN": "arn:aws:sqs:ap-northeast-1:<account-id>:<queue-name>",
+            "awsRegion": "ap-northeast-1"
+        },
+        {
+            "messageId": "ac9b023c-76d7-438a-b93f-42f052be648e",
+            "receiptHandle": "",
+            "body": "{\"Records\":[{\"eventVersion\":\"2.1\",\"eventSource\":\"aws:s3\",\"awsRegion\":\"ap-northeast-1\",\"eventTime\":\"2022-07-13T06:59:44.004Z\",\"eventName\":\"ObjectCreated:Put\",\"userIdentity\":{\"principalId\":\"AWS:AIDAVFS7MDIFLS7RL3CFM\"},\"requestParameters\":{\"sourceIPAddress\":\"<ip>\"},\"responseElements\":{\"x-amz-request-id\":\"MBXMNC3EVAXQ565D\",\"x-amz-id-2\":\"JI1lw0ZQG+H5zw/cczBbmdEIUWMAVN26atssH9Kh9D6ojhe7KJ3Aef94qo0icBGC1E7r5p/LlpKwqBNRSrHORa8TEVRGYmVv+DdkSKlWSLI=\"},\"s3\":{\"s3SchemaVersion\":\"1.0\",\"configurationId\":\"MWY0ZjU4NmEtYzFjYi00MzI3LWE3OGQtMmJjMmZlNjc2OGE1\",\"bucket\":{\"name\":\"fortigateodsstack-bucket43879c71-1c56jgrp7loty\",\"ownerIdentity\":{\"principalId\":\"A5NO8ZYI27BKY\"},\"arn\":\"arn:aws:s3:::fortigateodsstack-bucket43879c71-1c56jgrp7loty\"},\"object\":{\"key\":\"raw/Fortigate_sample_v4.txt\",\"size\":41348,\"eTag\":\"d0f8ed665207dc0142e36d092d05b4de\",\"sequencer\":\"0062CE6D5FDCAB0060\"}}}]}",
+            "attributes": {
+                "ApproximateReceiveCount": "13",
+                "SentTimestamp": "1657695585333",
+                "SenderId": "",
+                "ApproximateFirstReceiveTimestamp": "1657695585333"
+            },
+            "messageAttributes": {},
+            "md5OfBody": "a3caa2064b1c9b1b85823ef060a56ef1",
+            "eventSource": "aws:sqs",
+            "eventSourceARN": "arn:aws:sqs:ap-northeast-1:<account-id>:<queue-name>",
+            "awsRegion": "ap-northeast-1"
+        }
+    ]
+}
