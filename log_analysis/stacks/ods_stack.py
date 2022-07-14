@@ -53,7 +53,7 @@ class OdsStack(Stack):
                 'REDSHIFT_TABLE': name,
             }
         )
-        function.add_environment('REDSHIFT_USER', f'IAMR:{function.role.role_name}')
+        function.add_environment('REDSHIFT_USER', function.role.role_name)
 
         function.role.attach_inline_policy(aws_iam.Policy(
             self, id='function_inline_policy',
@@ -72,7 +72,7 @@ class OdsStack(Stack):
                     ],
                     resources=[
                         f"arn:aws:redshift:*:*:dbname:*/*",
-                        f"arn:aws:redshift:*:*:dbuser:*/IAMR:{function.role.role_name}"
+                        f"arn:aws:redshift:*:*:dbuser:*/{function.role.role_name}"
                     ],
                 )
             ]
