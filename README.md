@@ -1,5 +1,7 @@
 # Log Analysis
 
+![solution_architecture](pictures/solution_architecture.png)
+
 ## 建立 Provisioned Redshift Cluster
 
 開啟 Redshift Console 並選擇 Create Cluster
@@ -47,6 +49,28 @@
     ```
 
     ![check-cdk](pictures/check-cdk.png)
+
+1. 安裝 Docker runtime
+
+    ```bash
+    # Following is ONLY for Amazon Linux 2
+    docker info
+
+    sudo yum update -y
+
+    sudo amazon-linux-extras install docker
+
+    sudo service docker start
+
+    sudo systemctl enable docker
+
+    sudo usermod -a -G docker ec2-user
+
+    # You may need to do SSH re-connect
+    docker info
+    ```
+
+    ![check-docker](pictures/check-docker.png)
 
 1. Clone Github Repo
 
@@ -224,25 +248,94 @@ GRANT ALL ON TABLE network_log.traffic TO "<role-name-from-cfn-output>";
 CREATE USER '<role-name-from-cfn-output>' PASSWORD DISABLE;
 GRANT ALL ON SCHEMA network_log TO "<role-name-from-cfn-output>";
 GRANT ALL ON TABLE network_log.event_monitor TO "<role-name-from-cfn-output>";
+
+-- Grant Traffic permission
+CREATE USER "<role-name-from-cfn-output>" PASSWORD DISABLE;
+GRANT ALL ON SCHEMA network_log TO "<role-name-from-cfn-output>";
+GRANT SELECT ON TABLE network_log.fortigate TO "<role-name-from-cfn-output>";
+GRANT SELECT ON TABLE network_log.paloalto TO "<role-name-from-cfn-output>";
+```
+
+## 測試
+
+上傳資料
+
+```bash
+aws s3 cp Paloalto_sample.txt s3://<bucket-name-from-cfn-output>/raw/
+aws s3 cp Fortigate_sample_dq.txt s3://<bucket-name-from-cfn-output>/raw/
+aws s3 cp Fortigate_sample_ndq.txt s3://<bucket-name-from-cfn-output>/raw/
+aws s3 cp Fortigate_sample_V4.txt s3://<bucket-name-from-cfn-output>/raw/
+```
+
+觀看結果
+
+```sql
+SELECT * FROM network_log.traffic;
+SELECT COUNT(*) FROM network_log.traffic;
+```
+
+觀看執行紀錄
+
+```sql
+SELECT * 
+FROM network_log.event_monitor
+ORDER BY event_time DESC;
 ```
 
 ## Troubleshooting
 
-- Lambda worker 成功執行但是 Redshift 無反應
+1. 檢查 STL_ERROR
 
-    1. 檢查 STL_ERROR
+    ```sql
+    SELECT userid, process, pid, context, errcode, error, recordtime
+    FROM STL_ERROR
+    ORDER BY recordtime DESC
+    ;
+    ```
 
-        ```sql
-        SELECT userid, process, pid, context, errcode, error, recordtime
-        FROM STL_ERROR
-        ORDER BY recordtime DESC
-        ;
-        ```
+1. 檢查 Redshift User
 
-    1. 測試 Redshift User 權限
+    ```sql
+    -- Get user list
+    SELECT * FROM pg_user;
 
-        ```sql
-        SET SESSION AUTHORIZATION '';
-        -- Do something
-        SET SESSION AUTHORIZATION default;
-        ```
+    -- Schema level
+    SELECT
+        u.usename,
+        s.schemaname,
+        has_schema_privilege(u.usename,s.schemaname,'create') AS user_has_select_permission,
+        has_schema_privilege(u.usename,s.schemaname,'usage') AS user_has_usage_permission
+    FROM
+        pg_user u
+    CROSS JOIN
+        (SELECT DISTINCT schemaname FROM pg_tables) s
+    WHERE
+        u.usename = 'myUserName' AND s.schemaname = 'mySchemaName'
+    ;
+
+
+    -- Table level
+    SELECT
+        u.usename,
+        t.schemaname||'.'||t.tablename,
+        has_table_privilege(u.usename,t.tablename,'select') AS user_has_select_permission,
+        has_table_privilege(u.usename,t.tablename,'insert') AS user_has_insert_permission,
+        has_table_privilege(u.usename,t.tablename,'update') AS user_has_update_permission,
+        has_table_privilege(u.usename,t.tablename,'delete') AS user_has_delete_permission,
+        has_table_privilege(u.usename,t.tablename,'references') AS user_has_references_permission
+    FROM
+        pg_user u
+    CROSS JOIN
+        pg_tables t
+    WHERE
+        u.usename = 'myUserName' AND t.tablename = 'myTableName'
+    ;
+    ```
+
+1. 測試 Redshift User 權限
+
+    ```sql
+    SET SESSION AUTHORIZATION '';
+    -- Do something
+    SET SESSION AUTHORIZATION default;
+    ```
