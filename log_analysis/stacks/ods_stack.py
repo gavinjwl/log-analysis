@@ -10,7 +10,7 @@ class OdsStack(Stack):
         super().__init__(scope, id, **kwargs)
 
         redshift_cluster_identifier = CfnParameter(
-            self, id='redshift_cluster_identifier', default='my-redshift-cluster',
+            self, id='redshift_cluster_identifier', default='redshift-cluster-1',
         )
         redshift_database = CfnParameter(
             self, id='redshift_database', default='dev',
