@@ -2,107 +2,135 @@
 
 ![solution_architecture](pictures/solution_architecture.png)
 
+## 目錄
+
+![建立 IAM Role for Redshift](#建立-iam-role-for-redshift)
+![建立 Provisioned Redshift Cluster](#建立-provisioned-redshift-cluster)
+![建立 Cloud9 Environment](#建立-cloud9-environment)
+![AWS 部署](#aws-部署)
+![建立 Redshift Schema 和 Tables](#建立-redshift-schema-和-tables)
+![建立 Redshift Users 並給予權限](#建立-redshift-users-並給予權限)
+![建立 Traffic 任務](#建立-traffic-任務)
+![測試](#測試)
+![Troubleshooting](#troubleshooting)
+
+## 建立 IAM Role for Redshift
+
+Role name: `RedshiftWorkshopRole`
+
+ManagedPolicies
+
+- `AmazonS3FullAccess`
+- `AmazonRedshiftAllCommandsFullAccess`
+
+![iam-create-redshift-default-role-0](pictures/iam-create-redshift-default-role-0.png)
+![iam-create-redshift-default-role-1](pictures/iam-create-redshift-default-role-1.png)
+![iam-create-redshift-default-role-2](pictures/iam-create-redshift-default-role-2.png)
+![iam-create-redshift-default-role-3](pictures/iam-create-redshift-default-role-3.png)
+![iam-create-redshift-default-role-4](pictures/iam-create-redshift-default-role-4.png)
+
 ## 建立 Provisioned Redshift Cluster
 
 開啟 Redshift Console 並選擇 Create Cluster
 
-1. __Node type__: ra3.xlplus
-1. __Number of nodes__: 1
-1. __Admin user name__: awsuser
-1. __Admin user password__: `<your-password>`
-1. __Associated IAM roles__: 建立一個新的 IAM Role 並給予 ManagedPolicy: `AmazonS3FullAccess`
-
-![create-provisioned-redshift](pictures/create-provisioned-redshift.png)
+![redshift-create-cluster-0](pictures/redshift-create-cluster-0.png)
+![redshift-create-cluster-1](pictures/redshift-create-cluster-1.png)
+![redshift-create-cluster-2](pictures/redshift-create-cluster-2.png)
 
 ## 建立 Cloud9 Environment
 
-1. 開啟 Cloud9 畫面
-1. 建立 Cloud9 Environment
+![cloud9-create-environment-0](pictures/cloud9-create-environment-0.png)
+![cloud9-create-environment-1](pictures/cloud9-create-environment-###png)
+![cloud9-create-environment-2](pictures/cloud9-create-environment-2.png)
+![cloud9-create-environment-3](pictures/cloud9-create-environment-3.png)
 
-    ![create-cloud9-environment-1](pictures/create-cloud9-environment-1.png)
+## AWS 部署
 
-    ![create-cloud9-environment-2](pictures/create-cloud9-environment-2.png)
+### 開啟 Cloud9 終端機
 
-1. 開啟 Cloud9 終端機
+![cloud9-open-terminal](pictures/cloud9-open-terminal.png)
 
-    ![open-cloud9-environment-terminal](pictures/open-cloud9-environment-terminal.png)
+### 確認使用者權限和 AWS 設定
 
-1. 確認使用者權限和 AWS 設定
+```bash
+aws sts get-caller-identity
+# {
+#     "Account": "xxxxxxxxxxx", 
+#     "UserId": "xxxxxxxxxx:xxxxxxx", 
+#     "Arn": "arn:aws:sts::xxxxxxxxx:assumed-role/xxxxxxx/xxxxxx"
+# }
 
-    ```bash
-    aws sts get-caller-identity
+aws configure list
+#       Name                    Value             Type    Location
+#       ----                    -----             ----    --------
+#    profile                <not set>             None    None
+# access_key     ****************G5KD shared-credentials-file    
+# secret_key     ****************Ru0s shared-credentials-file    
+#     region           ap-northeast-1      config-file    ~/.aws/config
+```
 
-    aws configure list
-    ```
+### 確認環境
 
-    ![check-cloud9-environment](pictures/check-cloud9-environment.png)
+```bash
+node --version
+# v16.16.0
 
-1. 安裝 CDK
+cdk --version
+# 2.3###0 (build b67950d)
 
-    ```bash
-    node --version
+docker --version
+# Docker version 20.10.13, build a224086
 
-    cdk --version
-    
-    ### if do not show cdk version, install it
-    # npm install -g --force aws-cdk
-    ```
+python --version
+# Python 3.7.10
 
-    ![check-cdk](pictures/check-cdk.png)
+pip --version
+# pip 20.2.2 from /usr/lib/python3.7/site-packages/pip (python 3.7)
 
-1. 安裝 Docker runtime
+git --version
+# git version 2.34.3
+```
 
-    ```bash
-    # Following is ONLY for Amazon Linux 2
-    docker info
+### Clone Github Repo
 
-    sudo yum update -y
+```bash
+git clone https://github.com/gavinjwl/log-analysis.git
+```
 
-    sudo amazon-linux-extras install docker
+### 更新 Python 依賴的函式庫並啟用 Python 虛擬環境 (venv)
 
-    sudo service docker start
+```bash
+pip install poetry
 
-    sudo systemctl enable docker
+cd log-analysis
 
-    sudo usermod -a -G docker ec2-user
+poetry install
 
-    # You may need to do SSH re-connect
-    docker info
-    ```
+source .venv/bin/activate
+```
 
-    ![check-docker](pictures/check-docker.png)
+### 部署 AWS 環境
 
-1. Clone Github Repo
+```bash
+cdk bootstrap
 
-    ```bash
-    git clone <repo>
-    ```
+cdk list
+# FortigateOdsStack
+# MonitorStack
+# PaloaltoOdsStack
+# TrafficDwsStack
 
-1. 更新 Python 依賴的函式庫並啟用 Python 虛擬環境 (venv)
-
-    ```bash
-    pip3 install poetry
-
-    cd <repo>
-
-    poetry update
-
-    source .venv/bin/activate
-    ```
-
-1. 部署 AWS 環境
-
-    ```bash
-    cdk synth
-
-    cdk deploy --all
-    ```
+cdk deploy FortigateOdsStack PaloaltoOdsStack MonitorStack
+```
 
 ## 建立 Redshift Schema 和 Tables
 
-使用 Redshift Query Editor V2 並使用 admin user 連接 Redshift Cluster
+### 使用 Redshift Query Editor V2 並使用 admin user 連接 Redshift Cluster
 
-建立 Redshift Schema 和 Tables
+![redshift-open-editor-v2](pictures/redshift-open-editor-v2.png)
+![redshift-connect-cluster](pictures/redshift-connect-cluster.png)
+
+### 建立 Schema 和 Tables
 
 ```sql
 CREATE SCHEMA IF NOT EXISTS network_log;
@@ -224,9 +252,9 @@ ENCODE AUTO
 
 ## 建立 Redshift Users 並給予權限
 
-使用 Redshift Query Editor V2 並使用 admin user 連接 Redshift Cluster
-
-建立 Redshift Users 並給予權限
+![cfn-get-fortigate-rolename](pictures/cfn-get-fortigate-rolename.png)
+![cfn-get-paloalto-rolename](pictures/cfn-get-paloalto-rolename.png)
+![cfn-get-monitor-rolename](pictures/cfn-get-monitor-rolename.png)
 
 ```sql
 -- Grant Fortigate
@@ -235,20 +263,38 @@ GRANT ALL ON SCHEMA network_log TO "<role-name-from-cfn-output>";
 GRANT ALL ON TABLE network_log.fortigate TO "<role-name-from-cfn-output>";
 
 -- Grant Paloalto
-CREATE USER '<role-name-from-cfn-output>' PASSWORD DISABLE;
+CREATE USER "<role-name-from-cfn-output>" PASSWORD DISABLE;
 GRANT ALL ON SCHEMA network_log TO "<role-name-from-cfn-output>";
 GRANT ALL ON TABLE network_log.paloalto TO "<role-name-from-cfn-output>";
 
--- Grant Traffic
-CREATE USER '<role-name-from-cfn-output>' PASSWORD DISABLE;
-GRANT ALL ON SCHEMA network_log TO "<role-name-from-cfn-output>";
-GRANT ALL ON TABLE network_log.traffic TO "<role-name-from-cfn-output>";
-
 -- Grant Monitor
-CREATE USER '<role-name-from-cfn-output>' PASSWORD DISABLE;
+CREATE USER "<role-name-from-cfn-output>" PASSWORD DISABLE;
 GRANT ALL ON SCHEMA network_log TO "<role-name-from-cfn-output>";
 GRANT ALL ON TABLE network_log.event_monitor TO "<role-name-from-cfn-output>";
+```
 
+## 建立 Traffic 任務
+
+### 使用 Cloud9 編輯設定檔
+
+設定檔: `log_analysis/traffic_lambda/config.py`
+
+```python
+DEPENDENCIES = {
+    '<function-name-from-cfn-output>': 'fortigate',
+    '<function-name-from-cfn-output>': 'paloalto',
+}
+```
+
+### 使用 Cloud9 部署 Traffic Stack
+
+```bash
+cdk deploy TrafficDwsStack
+```
+
+### 使用 Redshift 建立 Traffic user
+
+```sql
 -- Grant Traffic permission
 CREATE USER "<role-name-from-cfn-output>" PASSWORD DISABLE;
 GRANT ALL ON SCHEMA network_log TO "<role-name-from-cfn-output>";
@@ -258,7 +304,7 @@ GRANT SELECT ON TABLE network_log.paloalto TO "<role-name-from-cfn-output>";
 
 ## 測試
 
-上傳資料
+### 上傳資料
 
 ```bash
 aws s3 cp Paloalto_sample.txt s3://<bucket-name-from-cfn-output>/raw/
@@ -267,14 +313,14 @@ aws s3 cp Fortigate_sample_ndq.txt s3://<bucket-name-from-cfn-output>/raw/
 aws s3 cp Fortigate_sample_V4.txt s3://<bucket-name-from-cfn-output>/raw/
 ```
 
-觀看結果
+### 觀看結果
 
 ```sql
 SELECT * FROM network_log.traffic;
 SELECT COUNT(*) FROM network_log.traffic;
 ```
 
-觀看執行紀錄
+### 觀看執行紀錄
 
 ```sql
 SELECT * 
@@ -284,58 +330,59 @@ ORDER BY event_time DESC;
 
 ## Troubleshooting
 
-1. 檢查 STL_ERROR
+### 檢查 STL_ERROR
 
-    ```sql
-    SELECT userid, process, pid, context, errcode, error, recordtime
-    FROM STL_ERROR
-    ORDER BY recordtime DESC
-    ;
-    ```
+```sql
+SELECT pg_user.usename, process, pid, context, errcode, error, recordtime
+FROM STL_ERROR, pg_user
+WHERE STL_ERROR.userid = pg_user.usesysid
+ORDER BY recordtime DESC
+;
+```
 
-1. 檢查 Redshift User
+### 檢查 Redshift User 權限
 
-    ```sql
-    -- Get user list
-    SELECT * FROM pg_user;
+```sql
+-- Get user list
+SELECT * FROM pg_user;
 
-    -- Schema level
-    SELECT
-        u.usename,
-        s.schemaname,
-        has_schema_privilege(u.usename,s.schemaname,'create') AS user_has_select_permission,
-        has_schema_privilege(u.usename,s.schemaname,'usage') AS user_has_usage_permission
-    FROM
-        pg_user u
-    CROSS JOIN
-        (SELECT DISTINCT schemaname FROM pg_tables) s
-    WHERE
-        u.usename = 'myUserName' AND s.schemaname = 'mySchemaName'
-    ;
+-- Schema level
+SELECT
+    u.usename,
+    s.schemaname,
+    has_schema_privilege(u.usename,s.schemaname,'create') AS user_has_select_permission,
+    has_schema_privilege(u.usename,s.schemaname,'usage') AS user_has_usage_permission
+FROM
+    pg_user u
+CROSS JOIN
+    (SELECT DISTINCT schemaname FROM pg_tables) s
+WHERE
+    u.usename = 'myUserName' AND s.schemaname = 'mySchemaName'
+;
 
 
-    -- Table level
-    SELECT
-        u.usename,
-        t.schemaname||'.'||t.tablename,
-        has_table_privilege(u.usename,t.tablename,'select') AS user_has_select_permission,
-        has_table_privilege(u.usename,t.tablename,'insert') AS user_has_insert_permission,
-        has_table_privilege(u.usename,t.tablename,'update') AS user_has_update_permission,
-        has_table_privilege(u.usename,t.tablename,'delete') AS user_has_delete_permission,
-        has_table_privilege(u.usename,t.tablename,'references') AS user_has_references_permission
-    FROM
-        pg_user u
-    CROSS JOIN
-        pg_tables t
-    WHERE
-        u.usename = 'myUserName' AND t.tablename = 'myTableName'
-    ;
-    ```
+-- Table level
+SELECT
+    u.usename,
+    t.schemaname||'.'||t.tablename,
+    has_table_privilege(u.usename,t.tablename,'select') AS user_has_select_permission,
+    has_table_privilege(u.usename,t.tablename,'insert') AS user_has_insert_permission,
+    has_table_privilege(u.usename,t.tablename,'update') AS user_has_update_permission,
+    has_table_privilege(u.usename,t.tablename,'delete') AS user_has_delete_permission,
+    has_table_privilege(u.usename,t.tablename,'references') AS user_has_references_permission
+FROM
+    pg_user u
+CROSS JOIN
+    pg_tables t
+WHERE
+    u.usename = 'myUserName' AND t.tablename = 'myTableName'
+;
+```
 
-1. 測試 Redshift User 權限
+### 測試 Redshift User 權限
 
-    ```sql
-    SET SESSION AUTHORIZATION '';
-    -- Do something
-    SET SESSION AUTHORIZATION default;
-    ```
+```sql
+SET SESSION AUTHORIZATION '';
+-- Do something
+SET SESSION AUTHORIZATION default;
+```
