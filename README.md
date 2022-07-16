@@ -4,15 +4,15 @@
 
 ## 目錄
 
-![建立 IAM Role for Redshift](#建立-iam-role-for-redshift)
-![建立 Provisioned Redshift Cluster](#建立-provisioned-redshift-cluster)
-![建立 Cloud9 Environment](#建立-cloud9-environment)
-![AWS 部署](#aws-部署)
-![建立 Redshift Schema 和 Tables](#建立-redshift-schema-和-tables)
-![建立 Redshift Users 並給予權限](#建立-redshift-users-並給予權限)
-![建立 Traffic 任務](#建立-traffic-任務)
-![測試](#測試)
-![Troubleshooting](#troubleshooting)
+- [建立 IAM Role for Redshift](#建立-iam-role-for-redshift)
+- [建立 Provisioned Redshift Cluster](#建立-provisioned-redshift-cluster)
+- [建立 Cloud9 Environment](#建立-cloud9-environment)
+- [AWS 部署](#aws-部署)
+- [建立 Redshift Schema 和 Tables](#建立-redshift-schema-和-tables)
+- [建立 Redshift Users 並給予權限](#建立-redshift-users-並給予權限)
+- [建立 Traffic 任務](#建立-traffic-任務)
+- [測試](#測試)
+- [Troubleshooting](#troubleshooting)
 
 ## 建立 IAM Role for Redshift
 
