@@ -40,7 +40,7 @@ ManagedPolicies
 ## 建立 Cloud9 Environment
 
 ![cloud9-create-environment-0](pictures/cloud9-create-environment-0.png)
-![cloud9-create-environment-1](pictures/cloud9-create-environment-###png)
+![cloud9-create-environment-1](pictures/cloud9-create-environment-1.png)
 ![cloud9-create-environment-2](pictures/cloud9-create-environment-2.png)
 ![cloud9-create-environment-3](pictures/cloud9-create-environment-3.png)
 
