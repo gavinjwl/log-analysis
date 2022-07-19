@@ -127,7 +127,7 @@ cdk deploy FortigateOdsStack PaloaltoOdsStack MonitorStack
 
 ### 使用 Redshift Query Editor V2 並使用 admin user 連接 Redshift Cluster
 
-![redshift-open-editor-v2](pictures/redshift-open-editor-v2.png)
+![redshift-open-editor](pictures/redshift-open-editor.png)
 ![redshift-connect-cluster](pictures/redshift-connect-cluster.png)
 
 ### 建立 Schema 和 Tables
